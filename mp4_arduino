@@ -1,0 +1,24 @@
+#include <LiquidCrystal.h>
+
+// LCD: RS, E, D4, D5, D6, D7
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+// Pinos (ja definidos para os proximos commits)
+const int PIN_UP     = 6;
+const int PIN_DOWN   = 7;
+const int PIN_PLAY   = 8;
+const int PIN_STOP   = 10;
+const int PIN_BUZZER = 9;
+const int PIN_LED_AZUL     = 13;
+const int PIN_LED_VERMELHO = A0;
+
+void setup() {
+  lcd.begin(16, 2);
+  lcd.setCursor(0, 0);
+  lcd.print("Reprodutor de");
+  lcd.setCursor(0, 1);
+  lcd.print("Musicas FEI");
+}
+
+void loop() {
+}
