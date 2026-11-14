@@ -1,8 +1,10 @@
-#include <Adafruit_LiquidCrystal.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
 #include <avr/pgmspace.h>
 
-// LCD 16x2 com modulo I2C (SDA no A4, SCL no A5). O 0 e o endereco I2C no Tinkercad.
-Adafruit_LiquidCrystal lcd(0);
+// LCD 16x2 com modulo I2C (SDA no A4, SCL no A5).
+// Endereco comum: 0x27. Se o LCD ficar em branco, tente 0x3F.
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 // ---- Pinos ----
 const int PIN_UP           = 6;
@@ -34,8 +36,6 @@ const uint8_t BTN_UP = 0, BTN_DOWN = 1, BTN_PLAY = 2, BTN_STOP = 3;
 
 // Retorna true UMA vez por aperto (quando o botao e confirmado como pressionado).
 // Deve ser chamada a cada volta do loop().
-// Recebe o INDICE do botao (BTN_UP, BTN_DOWN...). Nao usamos o tipo Botao no
-// parametro porque o Tinkercad cria prototipos no topo do arquivo, antes da struct.
 bool botaoPressionado(uint8_t i) {
   Botao &b = botoes[i];
   bool leitura = digitalRead(b.pino);
@@ -92,7 +92,6 @@ struct Nota {
 };
 
 // ---- Melodias (todas na memoria FLASH com PROGMEM) ----
-// Game of Thrones: versao simplificada. SUBSTITUA pela sua melodia.
 const Nota melodiaGot[] PROGMEM = {
   {N_G4, 6}, {N_C4, 6}, {N_DS4, 2}, {N_F4, 2}, {N_G4, 6}, {N_C4, 6},
   {N_DS4, 2}, {N_F4, 2}, {N_G4, 6}, {N_C4, 6}, {N_DS4, 2}, {N_F4, 2},
@@ -231,7 +230,8 @@ void navegarMenu() {
 }
 
 // ---- Nome da musica rolando na 2a linha ----
-const unsigned long INTERVALO_ROLAGEM = 300;  // ms entre cada deslocamento
+// Intervalo maior = menos escritas no LCD = menos atraso na musica.
+const unsigned long INTERVALO_ROLAGEM = 500;  // ms entre cada deslocamento
 
 char nomeRolagem[48];
 uint8_t tamanhoRolagem = 0;
@@ -353,8 +353,8 @@ void setup() {
   pinMode(PIN_STOP, INPUT_PULLUP);
 
   testeLeds();
-  lcd.begin(16, 2);
-  lcd.setBacklight(1);
+  lcd.init();
+  lcd.backlight();
   desenharMenu();
 }
 
