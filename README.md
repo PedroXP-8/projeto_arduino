@@ -22,13 +22,6 @@ De início, o sistema seria montado com o LCD 16x2 padrão, conforme mostrado em
 
 O projeto foi desenvolvido utilizando a assistência parcial de IAs, onde sua ajuda foi mais utilizada no começo do projeto, explicando arquiteturas de código eficientes, padrões de funcionamento e resolução dos problemas. Somado a isso, também utilizamos IA para responder perguntas técnicas e outras dúvidas relacionadas ao projeto.
 
-> 📷 **[INSERIR AQUI: foto do projeto montado]**
->
-> `![Projeto montado](imagens/projeto_montado.jpg)`
-
-> 📷 **[OPCIONAL: print do circuito no Tinkercad]**
->
-> `![Circuito no Tinkercad](imagens/tinkercad.png)`
 
 ### Principais problemas enfrentados
 
@@ -37,21 +30,6 @@ O projeto foi desenvolvido utilizando a assistência parcial de IAs, onde sua aj
 2 - Compilação do código: Quando já tínhamos todo o circuito montado e o código pronto, muitas vezes o arduino IDE não executava a compilação, principalmente pela falta de instalação das bibliotecas necessárias, como a LiquidCrystal_I2C.
 
 3 - Organização do código: quando já sabíamos o que precisaria ser feito no código, como as funções necessárias, estados do projeto, estruturação e utilização das músicas, a junção de todas essas informações foi um problema principal na programação.
-
----
-
-## Experimentos
-
-> 📷 **[INSERIR AQUI: sequência de fotos do projeto em funcionamento, cada uma com uma breve explicação]**
->
-> Sugestão de sequência:
-> 1. Menu principal com a lista de músicas no LCD
-> 2. Seleção de música com os botões UP e DOWN
-> 3. Música tocando (LED azul aceso e "Reproduzindo" no LCD)
-> 4. Música pausada (LED vermelho aceso)
-> 5. Botão de stop retornando ao menu principal
-
-> 🎥 **[INSERIR AQUI: link ou arquivo dos vídeos do projeto em funcionamento]**
 
 ---
 
