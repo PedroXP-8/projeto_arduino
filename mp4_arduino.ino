@@ -2,11 +2,8 @@
 #include <LiquidCrystal_I2C.h>
 #include <avr/pgmspace.h>
 
-// LCD 16x2 com modulo I2C (SDA no A4, SCL no A5).
-// Endereco comum: 0x27. Se o LCD ficar em branco, tente 0x3F.
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
-// ---- Pinos ----
 const int PIN_UP           = 6;
 const int PIN_DOWN         = 7;
 const int PIN_PLAY         = 8;
@@ -15,14 +12,13 @@ const int PIN_BUZZER       = 9;
 const int PIN_LED_AZUL     = 13;
 const int PIN_LED_VERMELHO = A0;
 
-// ---- Botoes com debounce ----
-// Os botoes usam INPUT_PULLUP: solto = HIGH, pressionado = LOW.
+
 const unsigned long TEMPO_DEBOUNCE = 30;  // ms
 
 struct Botao {
   uint8_t pino;
-  bool estavel;               // ultimo estado confirmado
-  bool ultimaLeitura;         // ultima leitura crua do pino
+  bool estavel;            
+  bool ultimaLeitura;         
   unsigned long ultimaMudanca;
 };
 
@@ -34,8 +30,7 @@ Botao botoes[4] = {
 };
 const uint8_t BTN_UP = 0, BTN_DOWN = 1, BTN_PLAY = 2, BTN_STOP = 3;
 
-// Retorna true UMA vez por aperto (quando o botao e confirmado como pressionado).
-// Deve ser chamada a cada volta do loop().
+
 bool botaoPressionado(uint8_t i) {
   Botao &b = botoes[i];
   bool leitura = digitalRead(b.pino);
@@ -52,9 +47,7 @@ bool botaoPressionado(uint8_t i) {
   return false;
 }
 
-// ---- Frequencias das notas (Hz) ----
-// Prefixo N_ evita conflito com os pinos A4 e A5 do Arduino.
-// S no nome = sustenido (ex.: DS4 = Re# da 4a oitava).
+
 #define PAUSA 0
 #define N_C4  262
 #define N_D4  294
@@ -82,16 +75,11 @@ bool botaoPressionado(uint8_t i) {
 #define N_CS6 1109
 #define N_D6  1175
 
-// Cada nota = frequencia (Hz) + duracao em "ticks".
-// 1 tick = 1/16 de compasso (semicolcheia). Exemplos de duracao:
-// 1 = semicolcheia, 2 = colcheia, 4 = seminima, 8 = minima, 16 = semibreve
-// (valores pontuados: 3, 6, 12...)
 struct Nota {
   uint16_t freq;
   uint8_t  dur;
 };
 
-// ---- Melodias (todas na memoria FLASH com PROGMEM) ----
 const Nota melodiaGot[] PROGMEM = {
   {N_G4, 6}, {N_C4, 6}, {N_DS4, 2}, {N_F4, 2}, {N_G4, 6}, {N_C4, 6},
   {N_DS4, 2}, {N_F4, 2}, {N_G4, 6}, {N_C4, 6}, {N_DS4, 2}, {N_F4, 2},
@@ -143,7 +131,7 @@ const Nota melodiaTetris[] PROGMEM = {
   {N_A4, 4}, {N_A4, 8}, {PAUSA, 4}
 };
 
-// ---- Nomes (FLASH): curto para o menu, completo para a rolagem ----
+
 const char menu0[] PROGMEM = "Game of Thrones";
 const char menu1[] PROGMEM = "Super Mario";
 const char menu2[] PROGMEM = "Imperial March";
@@ -156,7 +144,7 @@ const char full2[] PROGMEM = "Star Wars - Imperial March";
 const char full3[] PROGMEM = "Harry Potter - Hedwig's Theme";
 const char full4[] PROGMEM = "Tetris - Korobeiniki";
 
-// ---- Tabela de musicas ----
+
 struct Musica {
   const char *nomeMenu;
   const char *nomeCompleto;
@@ -174,17 +162,17 @@ const Musica musicas[] = {
 };
 const uint8_t NUM_MUSICAS = sizeof(musicas) / sizeof(musicas[0]);
 
-// ---- Estado do aparelho e LEDs ----
+
 enum Estado { MENU, TOCANDO, PAUSADO };
 Estado estado = MENU;
 
-// LED azul = tocando | LED vermelho = pausado | ambos apagados = menu
+
 void atualizarLeds() {
   digitalWrite(PIN_LED_AZUL,     estado == TOCANDO ? HIGH : LOW);
   digitalWrite(PIN_LED_VERMELHO, estado == PAUSADO ? HIGH : LOW);
 }
 
-// Pisca cada LED ao ligar, para conferir a montagem
+
 void testeLeds() {
   digitalWrite(PIN_LED_AZUL, HIGH);
   delay(400);
@@ -194,9 +182,8 @@ void testeLeds() {
   digitalWrite(PIN_LED_VERMELHO, LOW);
 }
 
-// ---- Menu ----
-uint8_t selecionada = 0;  // musica com a seta
-uint8_t topo = 0;         // primeira musica visivel (o LCD mostra 2 por vez)
+uint8_t selecionada = 0;  
+uint8_t topo = 0;         
 
 void desenharMenu() {
   char buf[17];
@@ -229,9 +216,8 @@ void navegarMenu() {
   }
 }
 
-// ---- Nome da musica rolando na 2a linha ----
-// Intervalo maior = menos escritas no LCD = menos atraso na musica.
-const unsigned long INTERVALO_ROLAGEM = 500;  // ms entre cada deslocamento
+
+const unsigned long INTERVALO_ROLAGEM = 500;  
 
 char nomeRolagem[48];
 uint8_t tamanhoRolagem = 0;
@@ -244,7 +230,7 @@ void prepararRolagem(uint8_t indice) {
   uint8_t len = strlen(nomeRolagem);
   precisaRolar = (len > 16);
   if (precisaRolar) {
-    strcat(nomeRolagem, "   ");  // espaco entre o fim e o recomeco do nome
+    strcat(nomeRolagem, "   "); 
   } else {
     while (len < 16) nomeRolagem[len++] = ' ';
     nomeRolagem[len] = '\0';
@@ -272,7 +258,6 @@ void atualizarRolagem() {
   desenharNome();
 }
 
-// ---- Reproducao SEM travar o programa (usa millis em vez de delay) ----
 const Musica *atual = &musicas[0];
 uint16_t indiceNota = 0;
 unsigned long inicioNota = 0;
@@ -285,7 +270,6 @@ void desenharTela() {
   desenharNome();
 }
 
-// Toca a nota atual e marca a hora em que ela comecou
 void tocarNotaAtual() {
   uint16_t freq = pgm_read_word(&atual->notas[indiceNota].freq);
   uint8_t  dur  = pgm_read_byte(&atual->notas[indiceNota].dur);
@@ -320,7 +304,7 @@ void retomar() {
   estado = TOCANDO;
   atualizarLeds();
   desenharTela();
-  tocarNotaAtual();  // recomeca a nota em que parou
+  tocarNotaAtual();  
 }
 
 void parar() {
@@ -330,13 +314,12 @@ void parar() {
   desenharMenu();
 }
 
-// Passa para a proxima nota quando a atual terminou
 void atualizarMusica() {
   if (estado != TOCANDO) return;
   if (millis() - inicioNota >= duracaoNota) {
     indiceNota++;
     if (indiceNota >= atual->tamanho) {
-      parar();  // acabou a musica: volta ao menu
+      parar();  
       return;
     }
     tocarNotaAtual();
