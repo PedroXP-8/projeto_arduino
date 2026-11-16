@@ -16,6 +16,8 @@ Esse é um projeto da matéria de digital experience ultimate (CCP020) que consi
 
 Os materiais utilizados, conforme os requisitos, foram: 4 botões, 2 leds (1 vermelho e 1 azul), 2 resistores de 220 ohms, um buzzer, um arduino UNO, uma protoboard (modelo maior), um LCD I2C e 22 fios. A criação do dispositivo também pelo aplicativo tinkercad ajudou na visualização do projeto antes de sua montagem.
 
+![Descrição da imagem](imagens/projeto_LCD_IC2.jpg)
+
 ### Métodos
 
 De início, o sistema seria montado com o LCD 16x2 padrão, conforme mostrado em aula pelo professor. Entretanto, quando obtivemos o kit para a montagem, o LCD que estava disponível era o I2C. A partir disso, tivemos de alterar um pouco a estrutura do código e o projeto em si, pelo fato desse LCD requerer bem menos fios (16 para 4).
@@ -41,6 +43,8 @@ O projeto foi desenvolvido utilizando a assistência parcial de IAs, onde sua aj
 - Tinkercad
 - GitHub
 - IAs (assistência parcial)
+
+  ![Descrição da imagem](imagens/projeto_montado.jpg)
 
 ---
 
