@@ -61,3 +61,7 @@ Ajuda de colegas de turma: Antes de jogarmos nossa dúvida no google ou em uma I
 ### Considerações finais
 
 O projeto ajudou bastante na consolidação dos conhecimentos da matéria, bem como a resolução/pesquisa de problemas nunca enfrentados antes. A cooperação entre os integrantes ajudou bastante no desenvolvimento do projeto, facilitando a coordenação e execução das atividades.
+
+Link do vídeo de demonstração no youtube : https://youtube.com/shorts/DQ5Oj5cwbcw
+
+Link do repositório : https://github.com/PedroXP-8/projeto_arduino
